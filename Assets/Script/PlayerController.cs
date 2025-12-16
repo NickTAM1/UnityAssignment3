@@ -2,9 +2,13 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] private float jumpForce = 5f;
-    [Tooltip("How fast the bird rotates when moving")]
-    [SerializeField] private float rotationSpeed = 3f;
+    [SerializeField]
+    [Tooltip("The upward force applied when the player clicks or taps.")] 
+    private float jumpForce = 5f;
+
+    [SerializeField]
+    [Tooltip("How fast the bird rotates when moving")] 
+    private float rotationSpeed = 3f;
 
     private Rigidbody rb;
     private bool isAlive = true;

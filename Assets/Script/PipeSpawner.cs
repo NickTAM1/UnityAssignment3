@@ -1,18 +1,23 @@
 using UnityEngine;
 
-/// <summary>
-/// Spawns pipes at regular intervals with random heights in 3D space
-/// </summary>
 public class PipeSpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
-    [SerializeField] private GameObject pipePrefab;
-    [Tooltip("Time between each pipe spawn")]
-    [SerializeField] private float spawnInterval = 2f;
+    [SerializeField]
+    [Tooltip("The Pipe prefab to instantiate")] 
+    private GameObject pipePrefab;
+    
+    [SerializeField]
+    [Tooltip("Time between each pipe spawn")] 
+    private float spawnInterval = 2f;
+    
+    [SerializeField]
     [Tooltip("Minimum height for pipe gap")]
-    [SerializeField] private float minHeight = -2f;
+    private float minHeight = -2f;
+    
+    [SerializeField]
     [Tooltip("Maximum height for pipe gap")]
-    [SerializeField] private float maxHeight = 2f;
+    private float maxHeight = 2f;
 
     private float spawnTimer;
     private bool canSpawn = true;

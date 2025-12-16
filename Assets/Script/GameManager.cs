@@ -8,11 +8,17 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("UI Elements")]
-    [SerializeField] private TextMeshProUGUI ScoreText;
-    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField]
+    [Tooltip("Reference to the TextMeshPro UI component that displays the player's current score.")]
+    private TextMeshProUGUI ScoreText;
+    [SerializeField]
+    [Tooltip("The UI Panel that contains the Game Over text and buttons. This is hidden by default.")] 
+    private GameObject gameOverPanel;
 
     [Header("References")]
-    [SerializeField] private PipeSpawner pipeSpawner;
+    [SerializeField]
+    [Tooltip("Reference to the PipeSpawner script. Used to stop pipes from spawning when the game ends.")] 
+    private PipeSpawner pipeSpawner;
 
     // Current score
     private int score = 0;

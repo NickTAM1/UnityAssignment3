@@ -4,12 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    /// <summary>
-    /// Starts the game by loading the Game scene
-    /// </summary>
+    
     public void StartGame()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Game"); // Load Game scene
     }
 
     /// <summary>
