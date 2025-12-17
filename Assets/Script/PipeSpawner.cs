@@ -1,38 +1,42 @@
 using UnityEngine;
 
+
 public class PipeSpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
     [SerializeField]
-    [Tooltip("The Pipe prefab to instantiate")] 
-    private GameObject pipePrefab;
-    
+    [Tooltip("The pipe prefab to spawn")]
+    private GameObject _pipePrefab;
+
     [SerializeField]
-    [Tooltip("Time between each pipe spawn")] 
-    private float spawnInterval = 2f;
-    
+    [Tooltip("Time between each pipe spawn in seconds")]
+    private float _spawnInterval = 2f;
+
     [SerializeField]
     [Tooltip("Minimum height for pipe gap")]
-    private float minHeight = -2f;
-    
+    private float _minHeight = -2f;
+
     [SerializeField]
     [Tooltip("Maximum height for pipe gap")]
-    private float maxHeight = 2f;
+    private float _maxHeight = 2f;
 
-    private float spawnTimer;
-    private bool canSpawn = true;
+    private float _spawnTimer;
+    private bool _canSpawn = true;
 
+    /// <summary>
+    /// Updates spawn timer and spawns pipes at intervals
+    /// </summary>
     void Update()
     {
-        if (!canSpawn) return;
+        if (!_canSpawn) return;
 
-        spawnTimer += Time.deltaTime;
+        _spawnTimer += Time.deltaTime;
 
         // Spawn new pipe when timer reaches interval
-        if (spawnTimer >= spawnInterval)
+        if (_spawnTimer >= _spawnInterval)
         {
             SpawnPipe();
-            spawnTimer = 0f;
+            _spawnTimer = 0f;
         }
     }
 
@@ -41,16 +45,16 @@ public class PipeSpawner : MonoBehaviour
     /// </summary>
     void SpawnPipe()
     {
-        float randomHeight = Random.Range(minHeight, maxHeight);
+        float randomHeight = Random.Range(_minHeight, _maxHeight);
         Vector3 spawnPosition = new Vector3(0f, randomHeight, 15f);
-        Instantiate(pipePrefab, spawnPosition, Quaternion.identity);
+        Instantiate(_pipePrefab, spawnPosition, Quaternion.identity);
     }
 
     /// <summary>
-    /// Stops spawning pipes (called on game over)
+    /// Stops spawning pipes when called (used on game over)
     /// </summary>
     public void StopSpawning()
     {
-        canSpawn = false;
+        _canSpawn = false;
     }
 }

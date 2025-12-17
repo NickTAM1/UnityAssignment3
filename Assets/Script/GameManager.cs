@@ -1,6 +1,7 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -9,20 +10,24 @@ public class GameManager : MonoBehaviour
 
     [Header("UI Elements")]
     [SerializeField]
-    [Tooltip("Reference to the TextMeshPro UI component that displays the player's current score.")]
-    private TextMeshProUGUI ScoreText;
+    [Tooltip("Text element that displays the current score")]
+    private TextMeshProUGUI _scoreText;
+
     [SerializeField]
-    [Tooltip("The UI Panel that contains the Game Over text and buttons. This is hidden by default.")] 
-    private GameObject gameOverPanel;
+    [Tooltip("Panel that shows when game is over")]
+    private GameObject _gameOverPanel;
 
     [Header("References")]
     [SerializeField]
-    [Tooltip("Reference to the PipeSpawner script. Used to stop pipes from spawning when the game ends.")] 
-    private PipeSpawner pipeSpawner;
+    [Tooltip("Reference to the pipe spawner to stop spawning on game over")]
+    private PipeSpawner _pipeSpawner;
 
     // Current score
-    private int score = 0;
+    private int _score = 0;
 
+    /// <summary>
+    /// Sets up singleton instance
+    /// </summary>
     void Awake()
     {
         // Setup singleton
@@ -36,52 +41,61 @@ public class GameManager : MonoBehaviour
         }
     }
 
+   
     void Start()
     {
         // Hide game over panel at start
-        if (gameOverPanel != null)
+        if (_gameOverPanel != null)
         {
-            gameOverPanel.SetActive(false);
+            _gameOverPanel.SetActive(false);
         }
 
         UpdateScoreText();
     }
 
     /// <summary>
-    /// Adds one point to the score
+    /// Adds one point to the score and updates display
     /// </summary>
     public void AddScore()
     {
-        score++;
+        _score++;
         UpdateScoreText();
     }
 
     /// <summary>
-    /// Updates the score display
+    /// Gets the current score value (used for speed increase)
+    /// </summary>
+    public int GetScore()
+    {
+        return _score;
+    }
+
+    /// <summary>
+    /// Updates the score text display
     /// </summary>
     void UpdateScoreText()
     {
-        if (ScoreText != null)
+        if (_scoreText != null)
         {
-            ScoreText.text = "Score: " + score;
+            _scoreText.text = "Score: " + _score;
         }
     }
 
     /// <summary>
-    /// Called when player dies - shows game over screen
+    /// Called when player dies - shows game over screen and stops game
     /// </summary>
     public void GameOver()
     {
         // Stop spawning pipes
-        if (pipeSpawner != null)
+        if (_pipeSpawner != null)
         {
-            pipeSpawner.StopSpawning();
+            _pipeSpawner.StopSpawning();
         }
 
         // Show game over panel
-        if (gameOverPanel != null)
+        if (_gameOverPanel != null)
         {
-            gameOverPanel.SetActive(true);
+            _gameOverPanel.SetActive(true);
         }
 
         // Stop time
@@ -98,7 +112,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns to main menu
+    /// Returns to main menu scene
     /// </summary>
     public void LoadMainMenu()
     {

@@ -1,27 +1,50 @@
 using UnityEngine;
+
+
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField]
-    [Tooltip("The upward force applied when the player clicks or taps.")] 
-    private float jumpForce = 5f;
+    [Tooltip("How strong the upward jump force is")]
+    private float _jumpForce = 5f;
 
     [SerializeField]
-    [Tooltip("How fast the bird rotates when moving")] 
-    private float rotationSpeed = 3f;
+    [Tooltip("How fast the bird rotates when moving")]
+    private float _rotationSpeed = 3f;
 
-    private Rigidbody rb;
-    private bool isAlive = true;
+    [Header("Visual Effects")]
+    [SerializeField]
+    [Tooltip("Color to flash when scoring a point")]
+    private Color _scoreFlashColor = Color.yellow;
+
+    [SerializeField]
+    [Tooltip("How long the flash effect lasts in seconds")]
+    private float _flashDuration = 0.2f;
+
+    private Rigidbody _rigidbody;
+    private bool _isAlive = true;
+    private Renderer _playerRenderer;
+    private Color _originalColor;
+    private float _flashTimer = 0f;
+
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
+        _playerRenderer = GetComponent<Renderer>();
+
+        // Save original color
+        if (_playerRenderer != null)
+        {
+            _originalColor = _playerRenderer.material.color;
+        }
     }
 
+  
     void Update()
     {
         // Only allow input if player is alive
-        if (!isAlive) return;
+        if (!_isAlive) return;
 
         // Jump when spacebar or mouse button is pressed
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
@@ -31,38 +54,70 @@ public class PlayerController : MonoBehaviour
 
         // Rotate bird based on velocity
         RotateBird();
+
+        // Handle color flash
+        HandleFlash();
     }
 
     /// <summary>
-    /// Makes the bird jump upward
+    /// Makes the bird jump upward by applying velocity
     /// </summary>
     void Jump()
     {
-        rb.linearVelocity = new Vector3(0, jumpForce, 0);
+        _rigidbody.linearVelocity = new Vector3(0, _jumpForce, 0);
     }
 
     /// <summary>
-    /// Rotates the bird based on its vertical movement
+    /// Rotates the bird based on its vertical movement speed
     /// </summary>
     void RotateBird()
     {
-        float rotation = rb.linearVelocity.y * rotationSpeed;
+        float rotation = _rigidbody.linearVelocity.y * _rotationSpeed;
         rotation = Mathf.Clamp(rotation, -90f, 45f);
         transform.rotation = Quaternion.Euler(rotation, 0, 0);
     }
 
     /// <summary>
-    /// Handles collision with pipes or ground
+    /// Handles the score flash effect timer and color reset
+    /// </summary>
+    void HandleFlash()
+    {
+        if (_flashTimer > 0f)
+        {
+            _flashTimer -= Time.deltaTime;
+
+            if (_flashTimer <= 0f && _playerRenderer != null)
+            {
+                // Reset to original color
+                _playerRenderer.material.color = _originalColor;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Triggers color flash effect when player scores
+    /// </summary>
+    public void FlashColor()
+    {
+        if (_playerRenderer != null)
+        {
+            _playerRenderer.material.color = _scoreFlashColor;
+            _flashTimer = _flashDuration;
+        }
+    }
+
+    /// <summary>
+    /// Handles collision with pipes or ground - triggers game over
     /// </summary>
     void OnCollisionEnter(Collision collision)
     {
         // Game over when hitting anything
-        isAlive = false;
+        _isAlive = false;
         GameManager.Instance.GameOver();
     }
 
     /// <summary>
-    /// Triggers when passing through pipe gap
+    /// Triggers when passing through pipe gap - adds score and flashes
     /// </summary>
     void OnTriggerEnter(Collider other)
     {
@@ -70,6 +125,7 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("ScoreZone"))
         {
             GameManager.Instance.AddScore();
+            FlashColor();
         }
     }
 }
